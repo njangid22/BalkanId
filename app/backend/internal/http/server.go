@@ -54,11 +54,11 @@ func NewServer(cfg config.Config, pool *db.Pool, fileSvc *files.Service, oauth *
 	}
 
 	router.Use(cors.Handler(cors.Options{
-		AllowedOrigins:   corsOrigins,
-		AllowedMethods:   []string{"GET", "POST", "OPTIONS"},
-		AllowedHeaders:   []string{"Authorization", "Content-Type"},
-		AllowCredentials: true,
-		MaxAge:           300,
+    AllowedOrigins:   []string{strings.TrimSuffix(cfg.FrontendURL, "/")}, // e.g. https://balkan-id-eight.vercel.app
+    AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+    AllowedHeaders:   []string{"*"},
+    AllowCredentials: true,
+    MaxAge:           300,
 	}))
 
 	server := &Server{
