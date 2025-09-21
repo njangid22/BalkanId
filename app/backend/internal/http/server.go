@@ -81,6 +81,7 @@ func (s *Server) registerRoutes() {
 	s.router.Get("/healthz", s.handleHealth)
 	s.router.Get("/auth/google/start", s.handleGoogleStart)
 	s.router.Get("/auth/google/callback", s.handleGoogleCallback)
+	s.router.Get("/debug/cookies", s.handleDebugCookies)
 
 	s.router.Route("/files", func(r chi.Router) {
 		r.Get("/{fileID}/download", s.handleFileDownload)
@@ -485,6 +486,43 @@ func (s *Server) writeJSON(w http.ResponseWriter, code int, payload any) {
 func (s *Server) Start() error {
 	addr := fmt.Sprintf(":%s", s.cfg.Port)
 	return http.ListenAndServe(addr, s.router)
+}
+
+// handleDebugCookies sets diagnostic cookies and echoes request/session information to help verify cookie attributes.
+func (s *Server) handleDebugCookies(w http.ResponseWriter, r *http.Request) {
+	// Set a short-lived diagnostic cookie using the same attributes as session cookies
+	expires := time.Now().Add(10 * time.Minute)
+	s.setSessionCookie(w, "debug_attrs", "1", expires)
+
+	// Also send a non-HttpOnly variant to observe in browser storage (still Secure/None/Partitioned when applicable)
+	if s.secureCookie {
+		exp := expires.UTC().Format("Mon, 02 Jan 2006 15:04:05 GMT")
+		w.Header().Add("Set-Cookie", fmt.Sprintf("debug_public=1; Path=/; Expires=%s; Secure; SameSite=None; Partitioned", exp))
+	} else {
+		http.SetCookie(w, &http.Cookie{Name: "debug_public", Value: "1", Path: "/", Expires: expires})
+	}
+
+	// Gather request diagnostics
+	cookies := map[string]string{}
+	for _, c := range r.Cookies() {
+		cookies[c.Name] = c.Value
+	}
+
+	_, hasSession := cookies[s.cfg.SessionCookieName]
+	authz := r.Header.Get("Authorization")
+	hasAuthz := strings.HasPrefix(authz, "Bearer ")
+
+	payload := map[string]any{
+		"frontendURL":       s.cfg.FrontendURL,
+		"sessionCookieName": s.cfg.SessionCookieName,
+		"secureCookie":      s.secureCookie,
+		"hasSessionCookie":  hasSession,
+		"hasAuthorization":  hasAuthz,
+		"cookieCount":       len(cookies),
+		"cookies":           cookies,
+		"now":               time.Now().UTC().Format(time.RFC3339),
+	}
+	s.writeJSON(w, http.StatusOK, payload)
 }
 
 // setSessionCookie writes the session cookie with attributes suitable for cross-site usage.
