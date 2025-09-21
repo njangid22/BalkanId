@@ -13,15 +13,14 @@ Secure file vault with deduplicated storage, granular sharing, public downloads,
 ## Demo (embedded)
 
 <!-- Replace the src with your hosted MP4 (GitHub supports <video> with mp4). Keep a poster image if you have one. -->
-<video src="https://youtu.be/8hp1gf7PEJE" controls playsinline muted width="100%" poster="https://your-cdn/thumb.jpg">
-  Your browser does not support the video tag.
-</video>
+[![Watch the video](https://img.youtube.com/vi/8hp1gf7PEJE/maxresdefault.jpg)](https://youtu.be/8hp1gf7PEJE)
+
+### [The video walks through: environment setup, where to get keys, how to run locally and via Docker, deploying frontend/backend, and a UX tour (uploading, sharing, public downloads).](https://youtu.be/8hp1gf7PEJE)
 
 <!-- If you only have YouTube/Vimeo, GitHub strips iframes. As a fallback, keep a clickable thumbnail:
 [![Watch the video](https://img.youtube.com/vi/YOUR_ID/hqdefault.jpg)](https://www.youtube.com/watch?v=YOUR_ID)
 -->
 
-The video walks through: environment setup, where to get keys, how to run locally and via Docker, deploying frontend/backend, and a UX tour (uploading, sharing, public downloads).
 
 ---
 
