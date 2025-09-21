@@ -1,0 +1,31 @@
+# General
+.git
+.gitignore
+**/.git
+**/.gitignore
+
+# Node/Next
+node_modules
+.next
+out
+coverage
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Env
+.env
+.env.*
+!*.example
+
+# OS/editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Temp
+/tmp/
+**/*.swp
+**/*.swo

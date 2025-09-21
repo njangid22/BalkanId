@@ -1,0 +1,105 @@
+scalar Time
+scalar Upload
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum ShareVisibility {
+  PRIVATE
+  PUBLIC
+}
+
+type User {
+  id: ID!
+  email: String!
+  name: String
+  role: Role!
+  quotaBytes: Int!
+  createdAt: Time!
+}
+
+type FileBlobInfo {
+  sha256: String!
+  sizeBytes: Int!
+  mimeDetected: String!
+}
+
+type File {
+  id: ID!
+  owner: User!
+  filenameOriginal: String!
+  sizeBytesOriginal: Int!
+  mimeDeclared: String
+  mimeDetected: String
+  uploadedAt: Time!
+  downloadCount: Int!
+  deduped: Boolean!
+  tags: [String!]!
+}
+
+type Share {
+  id: ID!
+  file: File!
+  visibility: ShareVisibility!
+  token: String
+  expiresAt: Time
+}
+
+type StorageStats {
+  totalUsageBytes: Int!
+  originalUsageBytes: Int!
+  savingsBytes: Int!
+  savingsPercent: Float!
+}
+
+type FileConnection {
+  nodes: [File!]!
+  totalCount: Int!
+}
+
+input FileFilter {
+  search: String
+  tags: [String!]
+  mimeTypes: [String!]
+  minSize: Int
+  maxSize: Int
+  uploaderName: String
+  uploaderId: ID
+  uploadedFrom: Time
+  uploadedTo: Time
+}
+
+type UploadResult {
+  files: [File!]!
+}
+
+type DeletePayload {
+  ok: Boolean!
+}
+
+input ShareInput {
+  fileId: ID!
+  visibility: ShareVisibility!
+  expiresAt: Time
+}
+
+type Query {
+  viewer: User
+  files(scope: FileScope, filter: FileFilter): FileConnection!
+  storageStats: StorageStats!
+}
+
+type Mutation {
+  uploadFiles(files: [Upload!]!): UploadResult!
+  deleteFile(id: ID!): DeletePayload!
+  createShare(input: ShareInput!): Share!
+  revokeShare(id: ID!): DeletePayload!
+}
+
+# Scope for listing files
+enum FileScope {
+  OWN
+  PUBLIC
+}

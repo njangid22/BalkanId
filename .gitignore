@@ -1,0 +1,45 @@
+# Root gitignore for monorepo
+# Editors/OS
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.log
+
+# Env
+.env
+.env.*
+!*.example
+
+# Node / Next.js
+node_modules/
+.next/
+.npm/
+out/
+coverage/
+
+# Go
+bin/
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+
+# Frontend build artifacts
+app/frontend/.next/
+app/frontend/node_modules/
+app/frontend/.env.local
+
+# Backend build and local files
+app/backend/.env
+app/backend/tmp/
+
+# Docker
+**/.dockerignore~
+
+# Misc
+*.swp
+*.swo

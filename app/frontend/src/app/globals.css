@@ -1,0 +1,45 @@
+﻿@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Store RGB triplets for alpha-friendly Tailwind rgb(var(--*)/x) usage */
+  --brand-primary: 11 31 76;    /* #0b1f4c */
+  --brand-accent: 27 92 255;    /* #1b5cff */
+  --brand-surface: 15 23 41;    /* #0f1729 */
+  --brand-muted: 30 41 59;      /* #1e293b */
+}
+
+body {
+  min-height: 100vh;
+  background-color: #020617;
+  color: #e2e8f0;
+  font-feature-settings: \"rlig\" 1, \"calt\" 1;
+}
+
+::selection {
+  background-color: rgba(37, 99, 235, 0.35);
+  color: #f8fafc;
+}
+
+.gradient-border {
+  position: relative;
+  border-radius: 1rem;
+}
+
+.gradient-border::before {
+  content: \"\";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(135deg, rgba(59,130,246,0.6), rgba(14,116,144,0.4));
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+          mask-composite: exclude;
+}
+
+.gradient-border > * {
+  position: relative;
+}

@@ -1,0 +1,27 @@
+# Root Docker ignore to reduce context when building subprojects
+.git
+.gitignore
+**/.git
+**/.gitignore
+
+# Node/Next
+node_modules
+.next
+out
+coverage
+
+# OS/editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Env
+.env
+.env.*
+!*.example
+
+# Temp
+/tmp/
+**/*.swp
+**/*.swo

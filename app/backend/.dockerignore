@@ -1,0 +1,31 @@
+# Ignore VCS and local files
+.git
+.gitignore
+**/.git
+**/.gitignore
+
+# Node/Frontend artifacts (not needed for backend)
+app/frontend/
+node_modules/
+
+# Build outputs
+bin/
+*.out
+*.test
+coverage/
+
+# OS/editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Env and secrets
+.env
+.env.*
+!*.example
+
+# Temp
+/tmp/
+**/*.swp
+**/*.swo

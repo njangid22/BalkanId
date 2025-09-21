@@ -1,0 +1,19 @@
+schema:
+  - graph/schema.graphqls
+exec:
+  dir: graph/generated
+  package: generated
+model:
+  filename: graph/model/models_gen.go
+  package: model
+resolver:
+  layout: follow-schema
+  dir: graph
+  package: graph
+models:
+  Time:
+    model:
+      - time.Time
+  Upload:
+    model:
+      - github.com/99designs/gqlgen/graphql.Upload

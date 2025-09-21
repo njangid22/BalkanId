@@ -1,0 +1,21 @@
+{
+  "extends": [
+    "next/core-web-vitals"
+  ],
+  "overrides": [
+    {
+      "files": [
+        "tailwind.config.js",
+        "postcss.config.js"
+      ],
+      "rules": {
+        "@next/next/no-html-link-for-pages": "off"
+      }
+    }
+  ],
+  "ignorePatterns": [
+    "tailwind.config.js",
+    "postcss.config.js",
+    "next.config.mjs"
+  ]
+}

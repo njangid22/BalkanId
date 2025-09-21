@@ -1,0 +1,15 @@
+# Node
+node_modules/
+.next/
+
+# Go
+bin/
+*.exe
+
+# Env
+.env
+.env.local
+
+# OS
+.DS_Store
+Thumbs.db
