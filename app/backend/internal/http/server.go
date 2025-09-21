@@ -172,13 +172,18 @@ func (s *Server) handleGoogleCallback(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	sameSite := http.SameSiteLaxMode
+	if s.secureCookie { 
+		sameSite = http.SameSiteNoneMode
+	}
+
 	http.SetCookie(w, &http.Cookie{
 		Name:     s.cfg.SessionCookieName,
 		Value:    token,
 		Path:     "/",
 		HttpOnly: true,
-		Secure:   s.secureCookie,
-		SameSite: http.SameSiteLaxMode,
+		Secure:   s.secureCookie, 
+		SameSite: sameSite,
 		Expires:  claims.ExpiresAt.Time,
 	})
 
