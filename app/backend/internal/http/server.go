@@ -176,7 +176,9 @@ func (s *Server) handleGoogleCallback(w http.ResponseWriter, r *http.Request) {
 
 	s.clearStateCookie(w)
 
-	redirect := strings.TrimSuffix(s.cfg.FrontendURL, "/") + "/files"
+	// Include JWT in fragment as a fallback for browsers blocking third-party cookies.
+	// The cookie is still set server-side; fragment allows frontend to store token and use Authorization header.
+	redirect := strings.TrimSuffix(s.cfg.FrontendURL, "/") + "/files#token=" + url.QueryEscape(token)
 	http.Redirect(w, r, redirect, http.StatusFound)
 }
 
@@ -415,26 +417,28 @@ func (s *Server) withSession(next http.Handler) http.Handler {
 }
 
 func (s *Server) sessionFromRequest(r *http.Request) (*auth.Session, error) {
-	cookie, err := r.Cookie(s.cfg.SessionCookieName)
-	if err != nil {
-		if errors.Is(err, http.ErrNoCookie) {
-			return nil, nil
+	// Prefer cookie if present
+	if cookie, err := r.Cookie(s.cfg.SessionCookieName); err == nil && cookie != nil && cookie.Value != "" {
+		if claims, err := s.jwt.Parse(cookie.Value); err == nil {
+			return &auth.Session{UserID: claims.UserID, Email: claims.Email, Name: claims.Name, Role: claims.Role}, nil
 		}
-		return nil, err
 	}
 
-	claims, err := s.jwt.Parse(cookie.Value)
-	if err != nil {
-		return nil, fmt.Errorf("parse session token: %w", err)
+	// Fallback: Authorization: Bearer <token>
+	authz := r.Header.Get("Authorization")
+	if strings.HasPrefix(authz, "Bearer ") {
+		token := strings.TrimSpace(strings.TrimPrefix(authz, "Bearer "))
+		if token != "" {
+			if claims, err := s.jwt.Parse(token); err == nil {
+				return &auth.Session{UserID: claims.UserID, Email: claims.Email, Name: claims.Name, Role: claims.Role}, nil
+			} else {
+				return nil, fmt.Errorf("parse bearer token: %w", err)
+			}
+		}
 	}
 
-	session := &auth.Session{
-		UserID: claims.UserID,
-		Email:  claims.Email,
-		Name:   claims.Name,
-		Role:   claims.Role,
-	}
-	return session, nil
+	// No credentials
+	return nil, nil
 }
 
 func (s *Server) validateState(r *http.Request, state string) bool {
